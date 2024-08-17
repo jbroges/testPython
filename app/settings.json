@@ -1,0 +1,22 @@
+{
+    "form1":{
+        "field_map":{
+            "name":"name",
+            "username":"username",
+            "email": "email",
+            "street":"street",
+            "suite":"suite",
+            "zipcode":"zipcode"
+        },
+        "positions":{
+            "name":[0,30],
+            "username":[0,30],
+            "email":[0,30],
+            "street":[0,30],
+            "suite":[0,30],
+            "zipcode":[0,30]
+        },
+        "sub_keys":["address"]
+        
+    }
+}

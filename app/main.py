@@ -6,6 +6,7 @@ import requests
 from models import User
 import fitz
 import random
+import json
 
 app = FastAPI()
 app.title = "Test de Pymupdf"
@@ -57,26 +58,25 @@ async def create_upload_file(file: UploadFile = File(...)):
 
     # Abrir el PDF con PyMuPDF
     pdf_document = fitz.open(f"temp/{file.filename}")
-
+    with open('settings.json', 'r', encoding='utf-8') as f:
+        data_settings = json.load(f)
     # Map data to PDF fields (replace with your specific mapping)
-    field_map = {
-        "name": "name",
-        "username":"username",
-        "email": "email",
-        "street":"street",
-        "suite":"suite",
-        "zipcode":"zipcode"
-    }
+    print(data_settings["form1"])
+    field_map = data_settings["form1"]['field_map']
+
+    sub_keys = data_settings["form1"]['sub_keys']
+
     page = pdf_document[0]
 
     for name, value in data.items():
         if name in field_map:
             field_name = field_map[name]
             field = page.search_for(field_name)
+            positions = data_settings["form1"]['positions']
             if field:
                 x, y = field[0][:2]  # Obteniendo las coordenadas x e y del campo
-                page.insert_text((x, y+30), value, fontsize=12, fill=(0, 0, 1))
-        if name == "address":
+                page.insert_text((x+positions[name][0], y+positions[name][1]), value, fontsize=12, fill=(0, 0, 1))
+        if name in sub_keys:
             for sub_name, sub_value in value.items():
                 if sub_name in field_map:
                     field_name = field_map[sub_name]
